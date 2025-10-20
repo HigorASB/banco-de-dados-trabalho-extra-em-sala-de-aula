@@ -1,13 +1,13 @@
-import { Marca } from "../../models/mongodb/Marca.js";
+import { Produto } from "../../models/mongodb/Produto.js";
 
-// Listar todas as marcas do MongoDB
+// Listar todos os produtos do MongoDB
 export async function list(req, res) {
   try {
-    const marcas = await Marca.find();
+    const produtos = await Produto.find();
 
     res.status(200).send({
       message: "Dados consultados com sucesso.",
-      data: marcas,
+      data: produtos,
       error: false,
     });
   } catch (error) {
@@ -19,15 +19,15 @@ export async function list(req, res) {
   }
 }
 
-// Buscar marca por ID do MongoDB
+// Buscar produto por ID do MongoDB
 export async function listById(req, res) {
   try {
     const { id } = req.params;
-    const marca = await Marca.findById(id);
+    const produto = await Produto.findById(id);
 
-    if (!marca) {
+    if (!produto) {
       return res.status(404).send({
-        message: "Marca não encontrada.",
+        message: "Produto não encontrado.",
         data: {},
         error: false,
       });
@@ -35,7 +35,7 @@ export async function listById(req, res) {
 
     return res.status(200).send({
       message: "Dados consultados com sucesso.",
-      data: marca,
+      data: produto,
       error: false,
     });
   } catch (error) {
@@ -47,25 +47,32 @@ export async function listById(req, res) {
   }
 }
 
-// Criar nova marca no MongoDB
+// Criar novo produto no MongoDB
 export async function create(req, res) {
   try {
-    const { nome, site, telefone } = req.body;
+    const { nome, preco, estoque, id_marca, marca_nome } = req.body;
 
-    if (!nome || !site || !telefone) {
+    if (!nome || !preco || !estoque || !id_marca || !marca_nome) {
       return res.status(400).send({
-        message: "Todos os campos são obrigatórios: nome, site, telefone",
+        message:
+          "Todos os campos são obrigatórios: nome, preco, estoque, id_marca, marca_nome",
         data: {},
         error: true,
       });
     }
 
-    const novaMarca = new Marca({ nome, site, telefone });
-    await novaMarca.save();
+    const novoProduto = new Produto({
+      nome,
+      preco,
+      estoque,
+      id_marca,
+      marca_nome,
+    });
+    await novoProduto.save();
 
     res.status(201).send({
-      message: "Marca criada com sucesso.",
-      data: novaMarca,
+      message: "Produto criado com sucesso.",
+      data: novoProduto,
       error: false,
     });
   } catch (error) {
@@ -77,29 +84,29 @@ export async function create(req, res) {
   }
 }
 
-// Atualizar marca no MongoDB
+// Atualizar produto no MongoDB
 export async function update(req, res) {
   try {
     const { id } = req.params;
-    const { nome, site, telefone } = req.body;
+    const { nome, preco, estoque, id_marca, marca_nome } = req.body;
 
-    const marca = await Marca.findByIdAndUpdate(
+    const produto = await Produto.findByIdAndUpdate(
       id,
-      { nome, site, telefone },
+      { nome, preco, estoque, id_marca, marca_nome },
       { new: true, runValidators: true }
     );
 
-    if (!marca) {
+    if (!produto) {
       return res.status(404).send({
-        message: "Marca não encontrada.",
+        message: "Produto não encontrado.",
         data: {},
         error: false,
       });
     }
 
     res.status(200).send({
-      message: "Marca atualizada com sucesso.",
-      data: marca,
+      message: "Produto atualizado com sucesso.",
+      data: produto,
       error: false,
     });
   } catch (error) {
@@ -111,24 +118,24 @@ export async function update(req, res) {
   }
 }
 
-// Deletar marca do MongoDB
+// Deletar produto do MongoDB
 export async function remove(req, res) {
   try {
     const { id } = req.params;
 
-    const marca = await Marca.findByIdAndDelete(id);
+    const produto = await Produto.findByIdAndDelete(id);
 
-    if (!marca) {
+    if (!produto) {
       return res.status(404).send({
-        message: "Marca não encontrada.",
+        message: "Produto não encontrado.",
         data: {},
         error: false,
       });
     }
 
     res.status(200).send({
-      message: "Marca deletada com sucesso.",
-      data: marca,
+      message: "Produto deletado com sucesso.",
+      data: produto,
       error: false,
     });
   } catch (error) {
