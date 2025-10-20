@@ -1,0 +1,12 @@
+Trabalho em sala de aula ( 5 Pts Extras )
+
+- Dando continuidade na API MySQL e MongoDB
+  - https://github.com/danielvalmeida91/api-com-banco-de-dados-rpv
+
+- Criar cadastro no MongoDB de :
+  - Produto
+  - Marca
+  - Pedido
+* Todos esses cadastros serão apenas no MongoDB
+
+- Criar um serviço que sincronize as coleções( marcas, produtos e pedidos ) do mongo com sua respectiva tabela no MySQL.
