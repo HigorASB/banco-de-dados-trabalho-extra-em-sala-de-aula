@@ -1,13 +1,13 @@
-import { Marca } from "../../models/mongodb/Marca.js";
+import { Pedido } from "../../models/mongodb/Pedido.js";
 
-// Listar todas as marcas do MongoDB
+// Listar todos os pedidos do MongoDB
 export async function list(req, res) {
   try {
-    const marcas = await Marca.find();
+    const pedidos = await Pedido.find();
 
     res.status(200).send({
       message: "Dados consultados com sucesso.",
-      data: marcas,
+      data: pedidos,
       error: false,
     });
   } catch (error) {
@@ -19,15 +19,15 @@ export async function list(req, res) {
   }
 }
 
-// Buscar marca por ID do MongoDB
+// Buscar pedido por ID do MongoDB
 export async function listById(req, res) {
   try {
     const { id } = req.params;
-    const marca = await Marca.findById(id);
+    const pedido = await Pedido.findById(id);
 
-    if (!marca) {
+    if (!pedido) {
       return res.status(404).send({
-        message: "Marca não encontrada.",
+        message: "Pedido não encontrado.",
         data: {},
         error: false,
       });
@@ -35,7 +35,7 @@ export async function listById(req, res) {
 
     return res.status(200).send({
       message: "Dados consultados com sucesso.",
-      data: marca,
+      data: pedido,
       error: false,
     });
   } catch (error) {
@@ -47,25 +47,38 @@ export async function listById(req, res) {
   }
 }
 
-// Criar nova marca no MongoDB
+// Criar novo pedido no MongoDB
 export async function create(req, res) {
   try {
-    const { nome, site, telefone } = req.body;
+    const { data_pedido, cliente, valor_total, itens } = req.body;
 
-    if (!nome || !site || !telefone) {
+    if (!cliente || !valor_total) {
       return res.status(400).send({
-        message: "Todos os campos são obrigatórios: nome, site, telefone",
+        message: "Campos obrigatórios: cliente, valor_total",
         data: {},
         error: true,
       });
     }
 
-    const novaMarca = new Marca({ nome, site, telefone });
-    await novaMarca.save();
+    if (!itens || !Array.isArray(itens) || itens.length === 0) {
+      return res.status(400).send({
+        message: "O pedido deve conter ao menos um item",
+        data: {},
+        error: true,
+      });
+    }
+
+    const novoPedido = new Pedido({
+      data_pedido: data_pedido || new Date(),
+      cliente,
+      valor_total,
+      itens,
+    });
+    await novoPedido.save();
 
     res.status(201).send({
-      message: "Marca criada com sucesso.",
-      data: novaMarca,
+      message: "Pedido criado com sucesso.",
+      data: novoPedido,
       error: false,
     });
   } catch (error) {
@@ -77,29 +90,29 @@ export async function create(req, res) {
   }
 }
 
-// Atualizar marca no MongoDB
+// Atualizar pedido no MongoDB
 export async function update(req, res) {
   try {
     const { id } = req.params;
-    const { nome, site, telefone } = req.body;
+    const { data_pedido, cliente, valor_total, itens } = req.body;
 
-    const marca = await Marca.findByIdAndUpdate(
+    const pedido = await Pedido.findByIdAndUpdate(
       id,
-      { nome, site, telefone },
+      { data_pedido, cliente, valor_total, itens },
       { new: true, runValidators: true }
     );
 
-    if (!marca) {
+    if (!pedido) {
       return res.status(404).send({
-        message: "Marca não encontrada.",
+        message: "Pedido não encontrado.",
         data: {},
         error: false,
       });
     }
 
     res.status(200).send({
-      message: "Marca atualizada com sucesso.",
-      data: marca,
+      message: "Pedido atualizado com sucesso.",
+      data: pedido,
       error: false,
     });
   } catch (error) {
@@ -111,24 +124,24 @@ export async function update(req, res) {
   }
 }
 
-// Deletar marca do MongoDB
+// Deletar pedido do MongoDB
 export async function remove(req, res) {
   try {
     const { id } = req.params;
 
-    const marca = await Marca.findByIdAndDelete(id);
+    const pedido = await Pedido.findByIdAndDelete(id);
 
-    if (!marca) {
+    if (!pedido) {
       return res.status(404).send({
-        message: "Marca não encontrada.",
+        message: "Pedido não encontrado.",
         data: {},
         error: false,
       });
     }
 
     res.status(200).send({
-      message: "Marca deletada com sucesso.",
-      data: marca,
+      message: "Pedido deletado com sucesso.",
+      data: pedido,
       error: false,
     });
   } catch (error) {

@@ -1,14 +1,186 @@
+### Teste da API
 GET http://localhost:3333/
 
-###
+### ============================================
+### MARCAS (MongoDB)
+### ============================================
 
+### Listar todas as marcas
 GET http://localhost:3333/marcas
 
-###
+### Buscar marca por ID
+GET http://localhost:3333/marcas/67359a1b2c3d4e5f6a7b8c9d
 
-GET http://localhost:3333/marcas/199
+### Criar nova marca
+POST http://localhost:3333/marcas
+Content-Type: application/json
 
-###
+{
+  "nome": "Nike",
+  "site": "https://www.nike.com",
+  "telefone": "(11) 1234-5678"
+}
 
+### Criar outra marca
+POST http://localhost:3333/marcas
+Content-Type: application/json
+
+{
+  "nome": "Adidas",
+  "site": "https://www.adidas.com",
+  "telefone": "(11) 8765-4321"
+}
+
+### Atualizar marca
+PUT http://localhost:3333/marcas/67359a1b2c3d4e5f6a7b8c9d
+Content-Type: application/json
+
+{
+  "nome": "Nike Brasil",
+  "site": "https://www.nike.com.br",
+  "telefone": "(11) 1234-5679"
+}
+
+### Deletar marca
+DELETE http://localhost:3333/marcas/67359a1b2c3d4e5f6a7b8c9d
+
+### ============================================
+### PRODUTOS (MongoDB)
+### ============================================
+
+### Listar todos os produtos
+GET http://localhost:3333/produtos
+
+### Buscar produto por ID
+GET http://localhost:3333/produtos/67359a1b2c3d4e5f6a7b8c9e
+
+### Criar novo produto
+POST http://localhost:3333/produtos
+Content-Type: application/json
+
+{
+  "nome": "Tênis Air Max",
+  "preco": 599.90,
+  "estoque": 50,
+  "id_marca": 1,
+  "marca_nome": "Nike"
+}
+
+### Criar outro produto
+POST http://localhost:3333/produtos
+Content-Type: application/json
+
+{
+  "nome": "Camisa Ultraboost",
+  "preco": 299.90,
+  "estoque": 30,
+  "id_marca": 2,
+  "marca_nome": "Adidas"
+}
+
+### Atualizar produto
+PUT http://localhost:3333/produtos/67359a1b2c3d4e5f6a7b8c9e
+Content-Type: application/json
+
+{
+  "nome": "Tênis Air Max 90",
+  "preco": 649.90,
+  "estoque": 45,
+  "id_marca": 1,
+  "marca_nome": "Nike"
+}
+
+### Deletar produto
+DELETE http://localhost:3333/produtos/67359a1b2c3d4e5f6a7b8c9e
+
+### ============================================
+### PEDIDOS (MongoDB)
+### ============================================
+
+### Listar todos os pedidos
+GET http://localhost:3333/pedidos
+
+### Buscar pedido por ID
+GET http://localhost:3333/pedidos/67359a1b2c3d4e5f6a7b8c9f
+
+### Criar novo pedido
+POST http://localhost:3333/pedidos
+Content-Type: application/json
+
+{
+  "cliente": "João Silva",
+  "valor_total": 1199.80,
+  "itens": [
+    {
+      "id_produto": 1,
+      "produto_nome": "Tênis Air Max",
+      "quantidade": 2,
+      "preco_unitario": 599.90
+    }
+  ]
+}
+
+### Criar pedido com múltiplos itens
+POST http://localhost:3333/pedidos
+Content-Type: application/json
+
+{
+  "cliente": "Maria Santos",
+  "valor_total": 899.80,
+  "itens": [
+    {
+      "id_produto": 1,
+      "produto_nome": "Tênis Air Max",
+      "quantidade": 1,
+      "preco_unitario": 599.90
+    },
+    {
+      "id_produto": 2,
+      "produto_nome": "Camisa Ultraboost",
+      "quantidade": 1,
+      "preco_unitario": 299.90
+    }
+  ]
+}
+
+### Atualizar pedido
+PUT http://localhost:3333/pedidos/67359a1b2c3d4e5f6a7b8c9f
+Content-Type: application/json
+
+{
+  "cliente": "João Silva Santos",
+  "valor_total": 1499.70,
+  "itens": [
+    {
+      "id_produto": 1,
+      "produto_nome": "Tênis Air Max",
+      "quantidade": 2,
+      "preco_unitario": 599.90
+    },
+    {
+      "id_produto": 2,
+      "produto_nome": "Camisa Ultraboost",
+      "quantidade": 1,
+      "preco_unitario": 299.90
+    }
+  ]
+}
+
+### Deletar pedido
+DELETE http://localhost:3333/pedidos/67359a1b2c3d4e5f6a7b8c9f
+
+### ============================================
+### SINCRONIZAÇÃO (MongoDB -> MySQL)
+### ============================================
+
+### Sincronizar todas as coleções (marcas, produtos e pedidos)
 POST http://localhost:3333/sync
 
+### Sincronizar apenas marcas
+POST http://localhost:3333/sync/marcas
+
+### Sincronizar apenas produtos
+POST http://localhost:3333/sync/produtos
+
+### Sincronizar apenas pedidos
+POST http://localhost:3333/sync/pedidos
