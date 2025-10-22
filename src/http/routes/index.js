@@ -5,6 +5,7 @@ import {
   sincronizarTudo,
   sincronizarColecao,
 } from "../../services/sincronizacao/mongo-para-mysql.js";
+import { database } from "../../database/index.js";
 
 export const routes = async (app) => {
   // Rota de teste
@@ -32,6 +33,59 @@ export const routes = async (app) => {
   app.post("/pedidos", pedidosController.create);
   app.put("/pedidos/:id", pedidosController.update);
   app.delete("/pedidos/:id", pedidosController.remove);
+
+  // ========== ROTAS DE CONSULTA MYSQL (para facilitar) ==========
+  // Consultar marcas no MySQL
+  app.get("/mysql/marcas", async (req, res) => {
+    try {
+      const marcas = await database("marcas").select();
+      return res.status(200).send({
+        message: "Marcas do MySQL",
+        data: marcas,
+      });
+    } catch (error) {
+      return res.status(500).send({
+        message: "Erro ao consultar MySQL",
+        erro: error.message,
+      });
+    }
+  });
+
+  // Consultar produtos no MySQL
+  app.get("/mysql/produtos", async (req, res) => {
+    try {
+      const produtos = await database("produtos")
+        .select("produtos.*", "marcas.nome as marca_nome")
+        .leftJoin("marcas", "produtos.id_marca", "marcas.id");
+      return res.status(200).send({
+        message: "Produtos do MySQL",
+        data: produtos,
+      });
+    } catch (error) {
+      return res.status(500).send({
+        message: "Erro ao consultar MySQL",
+        erro: error.message,
+      });
+    }
+  });
+
+  // Consultar pedidos no MySQL
+  app.get("/mysql/pedidos", async (req, res) => {
+    try {
+      const pedidos = await database("pedidos")
+        .select("pedidos.*", "clientes.nome as cliente_nome")
+        .leftJoin("clientes", "pedidos.id_cliente", "clientes.id");
+      return res.status(200).send({
+        message: "Pedidos do MySQL",
+        data: pedidos,
+      });
+    } catch (error) {
+      return res.status(500).send({
+        message: "Erro ao consultar MySQL",
+        erro: error.message,
+      });
+    }
+  });
 
   // ========== ROTAS DE SINCRONIZAÇÃO (MongoDB -> MySQL) ==========
   // Sincronizar todas as coleções

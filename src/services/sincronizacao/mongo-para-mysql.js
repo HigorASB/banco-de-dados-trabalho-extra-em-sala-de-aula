@@ -161,6 +161,37 @@ async function sincronizarPedidos() {
           clienteMySQL = { id: clienteId };
         }
 
+        // Valida se todos os produtos dos itens existem no MySQL
+        const itensValidos = [];
+        const itensInvalidos = [];
+
+        for (const item of pedido.itens) {
+          const produtoExiste = await database("produtos")
+            .where("id", item.id_produto)
+            .first();
+
+          if (produtoExiste) {
+            itensValidos.push(item);
+          } else {
+            itensInvalidos.push({
+              id_produto: item.id_produto,
+              produto_nome: item.produto_nome,
+              motivo: `Produto com ID ${item.id_produto} não encontrado no MySQL`,
+            });
+          }
+        }
+
+        // Se não há itens válidos, pula este pedido
+        if (itensValidos.length === 0) {
+          resultados.erros.push({
+            pedido: pedido._id.toString(),
+            cliente: pedido.cliente,
+            erro: "Nenhum produto válido encontrado no MySQL",
+            itens_invalidos: itensInvalidos,
+          });
+          continue;
+        }
+
         // Verifica se o pedido já existe no MySQL (por data e cliente)
         const pedidoExistente = await database("pedidos")
           .where("data_pedido", pedido.data_pedido)
@@ -178,8 +209,8 @@ async function sincronizarPedidos() {
             .where("id_pedido", pedidoExistente.id)
             .delete();
 
-          // Insere os novos itens
-          for (const item of pedido.itens) {
+          // Insere os novos itens (apenas os válidos)
+          for (const item of itensValidos) {
             await database("itens_pedidos").insert({
               id_pedido: pedidoExistente.id,
               id_produto: item.id_produto,
@@ -189,6 +220,17 @@ async function sincronizarPedidos() {
           }
 
           resultados.atualizados++;
+
+          // Se havia itens inválidos, adiciona um aviso
+          if (itensInvalidos.length > 0) {
+            resultados.erros.push({
+              pedido: pedido._id.toString(),
+              cliente: pedido.cliente,
+              tipo: "aviso",
+              mensagem: "Pedido atualizado, mas alguns itens foram ignorados",
+              itens_ignorados: itensInvalidos,
+            });
+          }
         } else {
           // Insere novo pedido
           const [pedidoId] = await database("pedidos").insert({
@@ -197,8 +239,8 @@ async function sincronizarPedidos() {
             valor_total: pedido.valor_total,
           });
 
-          // Insere os itens do pedido
-          for (const item of pedido.itens) {
+          // Insere os itens do pedido (apenas os válidos)
+          for (const item of itensValidos) {
             await database("itens_pedidos").insert({
               id_pedido: pedidoId,
               id_produto: item.id_produto,
@@ -208,10 +250,23 @@ async function sincronizarPedidos() {
           }
 
           resultados.inseridos++;
+
+          // Se havia itens inválidos, adiciona um aviso
+          if (itensInvalidos.length > 0) {
+            resultados.erros.push({
+              pedido: pedido._id.toString(),
+              cliente: pedido.cliente,
+              tipo: "aviso",
+              mensagem: "Pedido criado, mas alguns itens foram ignorados",
+              itens_ignorados: itensInvalidos,
+            });
+          }
         }
       } catch (error) {
         resultados.erros.push({
           pedido: pedido._id.toString(),
+          cliente: pedido.cliente || "Desconhecido",
+          tipo: "erro",
           erro: error.message,
         });
       }

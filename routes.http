@@ -9,7 +9,7 @@ GET http://localhost:3333/
 GET http://localhost:3333/marcas
 
 ### Buscar marca por ID
-GET http://localhost:3333/marcas/67359a1b2c3d4e5f6a7b8c9d
+GET http://localhost:3333/marcas/68f94fc27a3bcca0f679da50
 
 ### Criar nova marca
 POST http://localhost:3333/marcas
@@ -32,7 +32,7 @@ Content-Type: application/json
 }
 
 ### Atualizar marca
-PUT http://localhost:3333/marcas/67359a1b2c3d4e5f6a7b8c9d
+PUT http://localhost:3333/marcas/68f94fc27a3bcca0f679da50
 Content-Type: application/json
 
 {
@@ -42,7 +42,7 @@ Content-Type: application/json
 }
 
 ### Deletar marca
-DELETE http://localhost:3333/marcas/67359a1b2c3d4e5f6a7b8c9d
+DELETE http://localhost:3333/marcas/68f94fc27a3bcca0f679da50
 
 ### ============================================
 ### PRODUTOS (MongoDB)
@@ -52,7 +52,7 @@ DELETE http://localhost:3333/marcas/67359a1b2c3d4e5f6a7b8c9d
 GET http://localhost:3333/produtos
 
 ### Buscar produto por ID
-GET http://localhost:3333/produtos/67359a1b2c3d4e5f6a7b8c9e
+GET http://localhost:3333/produtos/68f9501f7a3bcca0f679da5f
 
 ### Criar novo produto
 POST http://localhost:3333/produtos
@@ -79,7 +79,7 @@ Content-Type: application/json
 }
 
 ### Atualizar produto
-PUT http://localhost:3333/produtos/67359a1b2c3d4e5f6a7b8c9e
+PUT http://localhost:3333/produtos/68f9501f7a3bcca0f679da5f
 Content-Type: application/json
 
 {
@@ -91,7 +91,7 @@ Content-Type: application/json
 }
 
 ### Deletar produto
-DELETE http://localhost:3333/produtos/67359a1b2c3d4e5f6a7b8c9e
+DELETE http://localhost:3333/produtos/68f9501f7a3bcca0f679da5f
 
 ### ============================================
 ### PEDIDOS (MongoDB)
@@ -101,7 +101,7 @@ DELETE http://localhost:3333/produtos/67359a1b2c3d4e5f6a7b8c9e
 GET http://localhost:3333/pedidos
 
 ### Buscar pedido por ID
-GET http://localhost:3333/pedidos/67359a1b2c3d4e5f6a7b8c9f
+GET http://localhost:3333/pedidos/68f9506c7a3bcca0f679da6e
 
 ### Criar novo pedido
 POST http://localhost:3333/pedidos
@@ -144,7 +144,7 @@ Content-Type: application/json
 }
 
 ### Atualizar pedido
-PUT http://localhost:3333/pedidos/67359a1b2c3d4e5f6a7b8c9f
+PUT http://localhost:3333/pedidos/68f9506c7a3bcca0f679da6e
 Content-Type: application/json
 
 {
@@ -167,7 +167,20 @@ Content-Type: application/json
 }
 
 ### Deletar pedido
-DELETE http://localhost:3333/pedidos/67359a1b2c3d4e5f6a7b8c9f
+DELETE http://localhost:3333/pedidos/68f9506c7a3bcca0f679da6e
+
+### ============================================
+### CONSULTAS MYSQL (para verificar IDs)
+### ============================================
+
+### Listar marcas do MySQL
+GET http://localhost:3333/mysql/marcas
+
+### Listar produtos do MySQL
+GET http://localhost:3333/mysql/produtos
+
+### Listar pedidos do MySQL
+GET http://localhost:3333/mysql/pedidos
 
 ### ============================================
 ### SINCRONIZAÇÃO (MongoDB -> MySQL)
